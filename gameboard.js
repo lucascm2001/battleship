@@ -5,10 +5,12 @@ export default class Gameboard {
   constructor() {
     this.board = [];
 
+    // Each board element containes an object containing a ship object and isHit boolean
     for (let i = 0; i < 100; i += 1) {
       this.board.push({ ship: null, isHit: false });
     }
 
+    // probably redundant
     this.shipLocations = [];
     this.ships = [];
   }
@@ -39,7 +41,8 @@ export default class Gameboard {
 
     // check if it was already hit
     if (this.board[index].isHit) {
-      // do nothing
+      // do nothing, fix in DOM
+      // maybe an update board method instead of calling something here
       console.log('This square is already hit');
     }
 
@@ -51,19 +54,5 @@ export default class Gameboard {
 
   checkAllShipsSunk() {
     return this.ships.every((ship) => ship.isSunk());
-  }
-
-  printBoard() {
-    let str = '';
-    this.board.forEach((val, index) => {
-      if (val.ship === null && !val.isHit) str += '. ';
-      else if (val.ship === null && val.isHit) str += 'x ';
-      else if (!val.isHit) str += 's ';
-      else str += '* ';
-      if ((1 + index) % 10 === 0) {
-        console.log(str);
-        str = '';
-      }
-    });
   }
 }

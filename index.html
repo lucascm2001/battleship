@@ -4,9 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <script src="gameboard.js" defer></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="gameLoop.js" type="module" defer></script>
 </head>
 <body>
-  
+  <div class="title">Battleship</div>
+  <div class="messages">
+    <span id="sentence"></span>
+    <span class="input-cursor"></span></div>
+
+  </div>
+  <div class="board-container">
+    <div class="players">Player 1</div>
+    <div class="players">Player 2</div>
+  </div>
 </body>
 </html>
