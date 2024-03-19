@@ -65,10 +65,10 @@ export function updateBoard(enemyPlayer, x, y) {
   enemyPlayer.gameboard.receiveAttack(x, y);
   // need to only update that grid
   if (enemyPlayer.gameboard.board[index].ship === null) {
-    square.textContent = '*';
+    // square.textContent = '*';
     // hitText(player, false);
   } else {
-    square.textContent = 'x';
+    // square.textContent = 'x';
     // hitText(player, true);
   }
 }
@@ -83,11 +83,14 @@ export function fadeBoard(player) {
 }
 
 // update text based on
-export function updateText(player) {
+export function updateText(player, text = null) {
   // update text to say 'Player 1's turn'
   const gameText = document.querySelector('#sentence');
-  gameText.textContent = `Player ${player.number}'s turn to shoot`;
-  // typeSentence(`Player ${player.number}'s turn to shoot`, gameText);
+  if (text !== null) {
+    gameText.textContent = text;
+  } else {
+    gameText.textContent = `Player ${player.number}'s turn to shoot`;
+  }
 }
 
 export function deactivateGrid(player) {

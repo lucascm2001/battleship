@@ -16,7 +16,7 @@ export default class Gameboard {
   }
 
   placeShip(size, x, y, axis) {
-    // make sure the x, y coords are legal for the ship
+    // TODO make sure the x, y coords are legal for the ship
     const index = x + y * 10;
     const shipLocation = [];
     const newShip = new Ship(size);
@@ -54,5 +54,31 @@ export default class Gameboard {
 
   checkAllShipsSunk() {
     return this.ships.every((ship) => ship.isSunk());
+  }
+
+  updatePosition(ship, index, switchAxis = false) {
+    // update on this.board, on the ship object itself, and on shipLocations
+    console.log(`\nship Location: ${ship.location}\n`);
+
+    const horizontal = ship.location[1] - ship.location[0] === 1;
+    this.shipLocations = this.shipLocations.filter((arr) => ship.location[0] !== arr[0]);
+
+    if ((horizontal && !switchAxis) || (!horizontal && switchAxis)) { // horizontal
+      for (let i = 0; i < ship.len; i += 1) {
+        this.board[ship.location[i]].ship = null;
+        ship.location[i] = index + i;
+        this.board[ship.location[i]].ship = ship;
+      }
+    } else { // vertical
+      for (let i = 0; i < ship.len; i += 1) {
+        this.board[ship.location[i]].ship = null;
+        ship.location[i] = index + 10 * i;
+        this.board[ship.location[i]].ship = ship;
+        // console.log(ship.location[i]);
+      }
+    }
+
+    // update shipLocations array
+    this.shipLocations.push(ship.location);
   }
 }

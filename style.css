@@ -71,8 +71,9 @@ body {
   justify-items: center;
   align-items: center;
   gap: 1px;
-  width: 409px;
-  height: 409px;
+  width: 411px;
+  height: 411px;
+  border: 1px solid red;
 }
 
 .square {
@@ -88,10 +89,6 @@ body {
   /* aspect-ratio: 1 / 1; */
 }
 
-.hover:hover {
-  background-color: lightblue;
-}
-
 .fade {
   opacity: 0.2;
 }
@@ -102,6 +99,11 @@ body {
   z-index: 1;
   position: absolute;
   opacity: 0.75;
+}
+
+.draggable {
+  touch-action: none;
+  user-select: none;
 }
 
 

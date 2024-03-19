@@ -2,7 +2,7 @@
   "name": "battleship",
   "version": "1.0.0",
   "description": "Practice Battleship Project",
-  "main": "index.js",
+  "private": true,
   "scripts": {
     "test": "jest"
   },
@@ -14,10 +14,9 @@
     "@babel/preset-env": "^7.24.0",
     "babel-jest": "^29.7.0",
     "eslint-plugin-jest": "^27.9.0",
+    "interactjs": "^1.10.26",
     "jest": "^29.7.0",
-    "readline-sync": "^1.4.10"
-  },
-  "dependencies": {
-    "interactjs": "^1.10.26"
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
   }
 }
