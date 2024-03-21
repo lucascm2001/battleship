@@ -1,5 +1,6 @@
 /* eslint-disable import/extensions */
 // create grids
+import { shipSunk } from './shipRender.js';
 
 export function createGrids() {
   const container = document.querySelector('.board-container');
@@ -11,7 +12,6 @@ export function createGrids() {
   for (let i = 0; i < 100; i += 1) {
     const square = document.createElement('div');
     square.classList.add('square');
-    square.classList.add('hover');
     grid1.appendChild(square);
   }
 
@@ -22,36 +22,33 @@ export function createGrids() {
   for (let i = 0; i < 100; i += 1) {
     const square = document.createElement('div');
     square.classList.add('square');
-    square.classList.add('hover');
     grid2.appendChild(square);
   }
   container.appendChild(grid1);
   container.appendChild(grid2);
 }
 
-function hitText(player, hit) {
-  const gameText = document.querySelector('#sentence');
-  if (hit) {
-    typeSentence(`Player ${player.number} hit!`, gameText);
-  } else {
-    typeSentence(`Player ${player.number} missed`, gameText);
-  }
-}
-
-export function updateBoard(enemyPlayer, x, y) {
-  const index = x + y * 10;
+export function updateBoard(enemyPlayer, index) {
   const boardNumber = enemyPlayer.number;
   const square = document.querySelector(`#grid${boardNumber} .square:nth-child(${index + 1})`);
 
-  enemyPlayer.gameboard.receiveAttack(x, y);
+  // will only receive valid places to hit
   // need to only update that grid
-  if (!enemyPlayer.gameboard.board[index].isHit) {
-    if (enemyPlayer.gameboard.board[index].ship === null) {
-      // figure out if square is already hit
-    } else {
-      // square.textContent = 'x';
-      // hitText(player, true);
+  if (enemyPlayer.gameboard.board[index].ship === null) {
+    square.classList.add('miss');
+    enemyPlayer.gameboard.receiveAttack(index);
+  } else {
+    const hitBox = document.createElement('div');
+    hitBox.classList.add('hit');
+    hitBox.style.pointerEvents = 'none';
+    square.appendChild(hitBox);
+
+    enemyPlayer.gameboard.receiveAttack(index);
+    if (enemyPlayer.gameboard.board[index].ship.isSunk()) {
+      shipSunk(enemyPlayer, enemyPlayer.gameboard.board[index].ship);
     }
+    // turn that square off
+    square.style.pointerEvents = 'none';
   }
 }
 
@@ -59,9 +56,11 @@ export function updateBoard(enemyPlayer, x, y) {
 export function fadeBoard(player) {
   const gridToFade = document.querySelector(`#grid${player.number}`);
   gridToFade.classList.toggle('fade');
+  /*
   [...gridToFade.children].forEach((square) => {
     square.classList.toggle('hover');
   });
+  */
 }
 
 // update text based on
@@ -75,16 +74,29 @@ export function updateText(player, text = null) {
   }
 }
 
+export function winningText(player) {
+  const gameText = document.querySelector('#sentence');
+  gameText.textContent = `Player ${player.number} wins!`;
+}
+
 export function deactivateGrid(player) {
   const grid = document.querySelector(`#grid${player.number}`);
   for (let i = 0; i < [...grid.children].length; i += 1) {
     [...grid.children][i].style.pointerEvents = 'none';
+    [...grid.children][i].classList.remove('hover');
   }
 }
 
 export function activateGrid(player) {
   const grid = document.querySelector(`#grid${player.number}`);
   for (let i = 0; i < [...grid.children].length; i += 1) {
-    [...grid.children][i].style.pointerEvents = 'auto';
+    // allow the event listeners only for non hits
+    if (![...[...grid.children][i].classList].includes('miss')) {
+      [...grid.children][i].style.pointerEvents = 'auto';
+    }
+    // check if the square is not hit
+    if (player.number === 2 && !player.gameboard.board[i].isHit) {
+      [...grid.children][i].classList.add('hover');
+    }
   }
 }

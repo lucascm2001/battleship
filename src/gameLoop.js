@@ -6,6 +6,7 @@ import Player from './player.js';
 import {
   createGrids,
   updateText,
+  winningText,
   updateBoard,
   fadeBoard,
   activateGrid,
@@ -13,12 +14,14 @@ import {
 } from './userInterface.js';
 
 import {
-  dragShips,
   showShips,
   updateShipPositions,
+  deactivateShips,
 } from './shipRender.js';
 
-/* TODO: Have screen stop on end game
+import selectIndex from './algorithm.js';
+
+/* TODO: Have screen stop on end game, play again button
 create AI for the bot it fights
 */
 
@@ -29,6 +32,8 @@ player1.gameboard.placeNewShip(2, 8, 9, 'x', 1);
 player1.gameboard.placeNewShip(5, 1, 3, 'y', 2);
 player1.gameboard.placeNewShip(3, 1, 1, 'x', 3);
 
+player2.gameboard.placeNewShip(2, 7, 7, 'x', 1);
+
 createGrids();
 showShips(player1.gameboard, player2.gameboard);
 
@@ -36,7 +41,6 @@ showShips(player1.gameboard, player2.gameboard);
 const gameText = document.querySelector('#sentence');
 gameText.textContent = 'Place the ships.';
 fadeBoard(player2);
-dragShips(player1.gameboard);
 
 // --- here is functionality for randomly placing ships
 const randomizeShipButton = document.querySelector('#randomize');
@@ -51,7 +55,6 @@ placeShipsButton.addEventListener('click', startGame);
 
 function gameIsOver() {
   if (player1.gameboard.checkAllShipsSunk()) {
-    console.log('player 2 wins!');
     return true;
   } if (player2.gameboard.checkAllShipsSunk()) {
     console.log('player 1 wins!');
@@ -61,22 +64,27 @@ function gameIsOver() {
 }
 
 function nextPlayer(player, enemyPlayer) {
-  gameIsOver();
-  updateText(player);
-  fadeBoard(player);
-  deactivateGrid(player);
-
-  fadeBoard(enemyPlayer);
-  activateGrid(enemyPlayer);
+  if (gameIsOver()) {
+    winningText(enemyPlayer);
+    deactivateGrid(player);
+    deactivateGrid(enemyPlayer);
+    // play again button !!
+  } else if (player.number === 1) { // human player turn
+    updateText(player);
+    activateGrid(enemyPlayer);
+  } else { // computer turn
+    updateText(player);
+    deactivateGrid(player);
+    updateBoard(enemyPlayer, selectIndex(enemyPlayer.gameboard));
+    nextPlayer(enemyPlayer, player);
+  }
 }
 
 function updateEventListeners(player, enemyPlayer) {
   const gridToAttack = document.querySelector(`#grid${enemyPlayer.number}`);
   [...gridToAttack.children].forEach((square, index) => {
     square.addEventListener('click', () => {
-      const y = Math.floor(index / 10);
-      const x = index % 10;
-      updateBoard(enemyPlayer, x, y);
+      updateBoard(enemyPlayer, index);
       nextPlayer(enemyPlayer, player);
     });
   });
@@ -84,11 +92,12 @@ function updateEventListeners(player, enemyPlayer) {
 
 function startGame() {
   // remove event listeners from the ships
+  // use the fade board thingy for the event listeners on my board
+  deactivateShips();
   updateEventListeners(player1, player2);
-  updateEventListeners(player2, player1);
   updateText(player1);
-  fadeBoard(player1);
+  // fadeBoard(player1);
   fadeBoard(player2);
   activateGrid(player2);
-  deactivateGrid(player1);
+  // deactivateGrid(player1);
 }

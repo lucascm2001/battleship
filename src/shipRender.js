@@ -82,91 +82,6 @@ export function updateShipPositions(gameboard) {
   }
 }
 
-function nonDragClick(element, board1, shipObject, shipBox) {
-  const delta = 6;
-  let startX;
-  let startY;
-
-  element.addEventListener('mousedown', (event) => {
-    startX = event.pageX;
-    startY = event.pageY;
-  });
-
-  element.addEventListener('mouseup', (event) => {
-    const diffX = Math.abs(event.pageX - startX);
-    const diffY = Math.abs(event.pageY - startY);
-
-    if (diffX < delta && diffY < delta) {
-      toggleAxis(board1, shipObject, shipBox);
-    }
-  });
-}
-
-export function showShips(board1, board2) {
-  // for each ship, create a rectangle around the coordinates
-  // first put down ship
-
-  for (let i = 0; i < board1.shipLocations.length; i += 1) {
-    const shipObject = board1.board[board1.shipLocations[i][0]].ship;
-
-    // for each ship, create div and place it on top of the cells
-    const shipBox = document.createElement('div');
-    shipBox.classList.add('ship');
-    shipBox.classList.add('draggable');
-    shipBox.setAttribute('data-id', shipObject.id);
-
-    // shipBox.classList.add('toggle');
-    // shipBox.classList.toggle('toggle');
-
-    // allow a click to rotate the ship
-    // need to make sure it's a non-drag click
-
-    nonDragClick(shipBox, board1, shipObject, shipBox);
-
-    const len = board1.shipLocations[i].length;
-    const firstIndex = board1.shipLocations[i][0];
-    const horizontal = board1.shipLocations[i][1] - board1.shipLocations[i][0] === 1;
-
-    if (horizontal) {
-      shipBox.style.top = '-1px';
-      shipBox.style.left = '-1px';
-      shipBox.style.width = `${40 * len + len - 1}px`; // each square is 40px
-      shipBox.style.height = '40px';
-    } else { // vertical
-      shipBox.style.top = '-1px';
-      shipBox.style.left = '-1px';
-      shipBox.style.width = '40px'; // each square is 40px
-      shipBox.style.height = `${40 * len + len - 1}px`;
-    }
-    const squareToAppend = document.querySelector(`#grid1 .square:nth-child(${firstIndex + 1})`);
-    squareToAppend.appendChild(shipBox);
-  }
-
-  for (let i = 0; i < board2.shipLocations.length; i += 1) {
-    // for each ship, create div and place it on top of the cells
-    const shipBox = document.createElement('div');
-    shipBox.classList.add('ship');
-
-    const len = board2.shipLocations[i].length;
-    const firstIndex = board2.shipLocations[i][0];
-    const horizontal = board2.shipLocations[i][1] - board2.shipLocations[i][0] === 1;
-
-    if (horizontal) {
-      shipBox.style.top = '-1px';
-      shipBox.style.left = '-1px';
-      shipBox.style.width = `${40 * len + len - 1}px`; // each square is 40px
-      shipBox.style.height = '40px';
-    } else { // vertical
-      shipBox.style.top = '-1px';
-      shipBox.style.left = '-1px';
-      shipBox.style.width = '40px'; // each square is 40px
-      shipBox.style.height = `${40 * len + len - 1}px`;
-    }
-    const squareToAppend = document.querySelector(`#grid2 .square:nth-child(${firstIndex + 1})`);
-    squareToAppend.appendChild(shipBox);
-  }
-}
-
 function validPosition(board, shipObject, originalX, originalY, movedRight, movedDown) {
   // get horizontal and vertical orientation
   const horizontal = shipObject.location[1] - shipObject.location[0] === 1;
@@ -194,7 +109,7 @@ function validPosition(board, shipObject, originalX, originalY, movedRight, move
   return true;
 }
 
-export function dragShips(board) {
+function dragShips(board) {
   // loop over ship objects and implement this
   const shipBoxes = [...document.querySelectorAll('#grid1 .ship')];
   // const gridRect = document.querySelector('#grid1').getBoundingClientRect();
@@ -279,4 +194,110 @@ export function dragShips(board) {
         shipBoxes[i].style.borderColor = 'blue';
       });
   }
+}
+
+function nonDragClick(element, board1, shipObject, shipBox) {
+  const delta = 6;
+  let startX;
+  let startY;
+
+  element.addEventListener('mousedown', (event) => {
+    startX = event.pageX;
+    startY = event.pageY;
+  });
+
+  element.addEventListener('mouseup', (event) => {
+    const diffX = Math.abs(event.pageX - startX);
+    const diffY = Math.abs(event.pageY - startY);
+
+    if (diffX < delta && diffY < delta) {
+      toggleAxis(board1, shipObject, shipBox);
+    }
+  });
+}
+
+export function showShips(board1, board2) {
+  // for each ship, create a rectangle around the coordinates
+  // first put down ship
+
+  for (let i = 0; i < board1.shipLocations.length; i += 1) {
+    const shipObject = board1.board[board1.shipLocations[i][0]].ship;
+
+    // for each ship, create div and place it on top of the cells
+    const shipBox = document.createElement('div');
+    shipBox.classList.add('ship');
+    shipBox.classList.add('draggable');
+    shipBox.setAttribute('data-id', shipObject.id);
+
+    // implement clicking functionality for ships
+    nonDragClick(shipBox, board1, shipObject, shipBox);
+
+    const len = board1.shipLocations[i].length;
+    const firstIndex = board1.shipLocations[i][0];
+    const horizontal = board1.shipLocations[i][1] - board1.shipLocations[i][0] === 1;
+
+    if (horizontal) {
+      shipBox.style.top = '-1px';
+      shipBox.style.left = '-1px';
+      shipBox.style.width = `${40 * len + len - 1}px`; // each square is 40px
+      shipBox.style.height = '40px';
+    } else { // vertical
+      shipBox.style.top = '-1px';
+      shipBox.style.left = '-1px';
+      shipBox.style.width = '40px'; // each square is 40px
+      shipBox.style.height = `${40 * len + len - 1}px`;
+    }
+    const squareToAppend = document.querySelector(`#grid1 .square:nth-child(${firstIndex + 1})`);
+    squareToAppend.appendChild(shipBox);
+  }
+
+  dragShips(board1);
+
+  // TODO: need to remove this for playing the bot
+
+  for (let i = 0; i < board2.shipLocations.length; i += 1) {
+    // for each ship, create div and place it on top of the cells
+    const shipObject = board2.board[board2.shipLocations[i][0]].ship;
+
+    const shipBox = document.createElement('div');
+    shipBox.classList.add('no-see-ship');
+    shipBox.setAttribute('data-id', shipObject.id);
+
+    const len = board2.shipLocations[i].length;
+    const firstIndex = board2.shipLocations[i][0];
+    const horizontal = board2.shipLocations[i][1] - board2.shipLocations[i][0] === 1;
+
+    if (horizontal) {
+      shipBox.style.top = '-1px';
+      shipBox.style.left = '-1px';
+      shipBox.style.width = `${40 * len + len - 1}px`; // each square is 40px
+      shipBox.style.height = '40px';
+    } else { // vertical
+      shipBox.style.top = '-1px';
+      shipBox.style.left = '-1px';
+      shipBox.style.width = '40px'; // each square is 40px
+      shipBox.style.height = `${40 * len + len - 1}px`;
+    }
+    const squareToAppend = document.querySelector(`#grid2 .square:nth-child(${firstIndex + 1})`);
+    squareToAppend.appendChild(shipBox);
+  }
+}
+
+export function deactivateShips() {
+  const ships = [...document.querySelectorAll('#grid1 .ship')];
+  for (let i = 0; i < ships.length; i += 1) {
+    ships[i].style.pointerEvents = 'none';
+  }
+}
+
+export function shipSunk(player, ship) {
+  // grab the right shipBox
+  const rightClass = player.number === 1 ? '.ship' : '.no-see-ship';
+  const shipBoxes = [...document.querySelectorAll(`#grid${player.number} ${rightClass}`)];
+  const shipBox = shipBoxes.find((box) => Number(box.getAttribute('data-id')) === ship.id);
+
+  shipBox.classList.remove('no-see-ship');
+  shipBox.classList.add('ship');
+  shipBox.style.backgroundColor = '#FFCCCB';
+  shipBox.style.border = '2px solid red';
 }

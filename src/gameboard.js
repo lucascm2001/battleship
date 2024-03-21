@@ -73,20 +73,16 @@ export default class Gameboard {
     }
   }
 
-  receiveAttack(x, y) {
-    const index = x + y * 10;
+  receiveAttack(index) {
+    // will return true if the attack sunk the ship. false otherwise
 
-    // check if it was already hit
-    if (this.board[index].isHit) {
-      // do nothing, fix in DOM
-      // maybe an update board method instead of calling something here
-      console.log('This square is already hit');
-    }
+    this.board[index].isHit = true;
 
     if (this.board[index].ship !== null) {
       this.board[index].ship.hit(index);
+      return this.board[index].ship.isSunk();
     }
-    this.board[index].isHit = true;
+    return false;
   }
 
   checkAllShipsSunk() {
