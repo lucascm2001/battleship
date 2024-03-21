@@ -106,4 +106,26 @@ body {
   user-select: none;
 }
 
+.toggle {
+  animation: wiggle 0.5s;
+}
+
+@keyframes wiggle {
+   0% { transform: translate(5px, 0px); }
+  20% { transform: translate(-10px, 0px); }
+  40% { transform: translate(10px, 0px); }
+  60% { transform: translate(-10px, 0px); }
+  80% { transform: translate(10px, 0px); }
+  100% { transform: translate(-5px, 0px); }
+  /*
+  60% { transform: translate(10px, 0px); }
+  70% { transform: translate(-10px, 0px); }
+  80% { transform: translate(10px, 0px); }
+  90% { transform: translate(-10px, 0px); }
+  100% { transform: translate(5px, 0px); }*/
+
+
+
+}
+
 

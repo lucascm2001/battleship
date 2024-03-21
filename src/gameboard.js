@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable import/extensions */
 import Ship from './ship.js';
 
@@ -15,11 +16,11 @@ export default class Gameboard {
     this.ships = [];
   }
 
-  placeShip(size, x, y, axis) {
+  placeNewShip(size, x, y, axis, id) {
     // TODO make sure the x, y coords are legal for the ship
     const index = x + y * 10;
     const shipLocation = [];
-    const newShip = new Ship(size);
+    const newShip = new Ship(size, id);
 
     for (let i = 0; i < newShip.len; i += 1) {
       if (axis === 'x') {
@@ -34,6 +35,42 @@ export default class Gameboard {
     }
     this.shipLocations.push(shipLocation);
     this.ships.push(newShip);
+  }
+
+  validShipPlacement(ship, x, y) {
+    const index = x + y * 10;
+    const horizontal = ship.location[1] - ship.location[0] === 1;
+
+    // not leaving the grid
+    if (horizontal && x + ship.len - 1 > 9) return false;
+    if (!horizontal && y + ship.len - 1 > 9) return false;
+
+    // not hitting another ship
+    for (let i = 0; i < ship.len; i += 1) {
+      if (horizontal && this.board[index + i].ship !== null) return false;
+      if (!horizontal && this.board[index + 10 * i].ship !== null) return false;
+    }
+    return true;
+  }
+
+  randomizeShipPlacement() {
+    // clear the board and shipLocations array first
+    this.shipLocations = [];
+    for (let i = 0; i < this.board.length; i += 1) {
+      this.board.ship = null;
+    }
+    // place ships randomly
+    for (let i = 0; i < this.ships.length; i += 1) {
+      let x = Math.floor(Math.random() * 10);
+      let y = Math.floor(Math.random() * 10);
+
+      // loop with new random values until we get a valid ship positioning
+      while (!this.validShipPlacement(this.ships[i], x, y)) {
+        x = Math.floor(Math.random() * 10);
+        y = Math.floor(Math.random() * 10);
+      }
+      this.updatePosition(this.ships[i], x + 10 * y, false);
+    }
   }
 
   receiveAttack(x, y) {
@@ -58,8 +95,6 @@ export default class Gameboard {
 
   updatePosition(ship, index, switchAxis = false) {
     // update on this.board, on the ship object itself, and on shipLocations
-    console.log(`\nship Location: ${ship.location}\n`);
-
     const horizontal = ship.location[1] - ship.location[0] === 1;
     this.shipLocations = this.shipLocations.filter((arr) => ship.location[0] !== arr[0]);
 
@@ -77,7 +112,6 @@ export default class Gameboard {
         // console.log(ship.location[i]);
       }
     }
-
     // update shipLocations array
     this.shipLocations.push(ship.location);
   }

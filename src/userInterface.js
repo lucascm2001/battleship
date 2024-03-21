@@ -29,25 +29,6 @@ export function createGrids() {
   container.appendChild(grid2);
 }
 
-function waitForMs(ms) {
-  return new Promise((resolve) => { setTimeout(resolve, ms); });
-}
-async function typeSentence(sentence, eleRef, delay = 100) {
-  eleRef.textContent = '';
-  const letters = sentence.split('');
-  let i = 0;
-  while (i < letters.length) {
-    await waitForMs(delay);
-    eleRef.textContent += letters[i];
-    i += 1;
-  }
-}
-
-export function initialText() {
-  const gameText = document.querySelector('#sentence');
-  typeSentence('Welcome to Battleship!', gameText);
-}
-
 function hitText(player, hit) {
   const gameText = document.querySelector('#sentence');
   if (hit) {
@@ -64,12 +45,13 @@ export function updateBoard(enemyPlayer, x, y) {
 
   enemyPlayer.gameboard.receiveAttack(x, y);
   // need to only update that grid
-  if (enemyPlayer.gameboard.board[index].ship === null) {
-    // square.textContent = '*';
-    // hitText(player, false);
-  } else {
-    // square.textContent = 'x';
-    // hitText(player, true);
+  if (!enemyPlayer.gameboard.board[index].isHit) {
+    if (enemyPlayer.gameboard.board[index].ship === null) {
+      // figure out if square is already hit
+    } else {
+      // square.textContent = 'x';
+      // hitText(player, true);
+    }
   }
 }
 

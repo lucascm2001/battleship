@@ -33,7 +33,6 @@ export function toggleAxis(gameboard, shipObject, shipBox) {
   // update gameboard
   // update UI
   if (validToggle(gameboard, shipObject)) {
-    console.log('YES');
     // update gameboard
     gameboard.updatePosition(shipObject, shipObject.location[0], true);
     const { len } = shipObject;
@@ -52,7 +51,34 @@ export function toggleAxis(gameboard, shipObject, shipBox) {
       shipBox.style.height = `${40 * len + len - 1}px`;
     }
   } else {
-    // cool animation
+    shipBox.classList.add('toggle');
+    shipBox.style.borderColor = 'red';
+    shipBox.style.backgroundColor = '#FFCCCB';
+    setTimeout(() => {
+      shipBox.classList.remove('toggle');
+      shipBox.style.borderColor = 'blue';
+      shipBox.style.backgroundColor = 'lightblue';
+    }, 600);
+  }
+}
+
+export function updateShipPositions(gameboard) {
+  // grab the information from the gameboard after clicking randomize ship placement
+  // gameboard should have valid ship positions to use
+
+  const shipBoxes = [...document.querySelectorAll('#grid1 .ship')];
+
+  for (let i = 0; i < gameboard.ships.length; i += 1) {
+    // loop over ships
+    // match up the ship id with the shipBox id
+    const shipBox = shipBoxes.find((box) => Number(box.getAttribute('data-id')) === gameboard.ships[i].id);
+    // put the shipBox in the correct square element
+    const containerSquare = shipBox.parentElement;
+    containerSquare.removeChild(shipBox);
+
+    const newSquareIndex = gameboard.ships[i].location[0];
+    const newSquare = document.querySelector(`#grid1 .square:nth-child(${newSquareIndex + 1})`);
+    newSquare.appendChild(shipBox);
   }
 }
 
@@ -81,13 +107,16 @@ export function showShips(board1, board2) {
   // first put down ship
 
   for (let i = 0; i < board1.shipLocations.length; i += 1) {
+    const shipObject = board1.board[board1.shipLocations[i][0]].ship;
+
     // for each ship, create div and place it on top of the cells
     const shipBox = document.createElement('div');
     shipBox.classList.add('ship');
     shipBox.classList.add('draggable');
-    shipBox.classList.add('toggle');
+    shipBox.setAttribute('data-id', shipObject.id);
 
-    const shipObject = board1.board[board1.shipLocations[i][0]].ship;
+    // shipBox.classList.add('toggle');
+    // shipBox.classList.toggle('toggle');
 
     // allow a click to rotate the ship
     // need to make sure it's a non-drag click
@@ -168,13 +197,12 @@ function validPosition(board, shipObject, originalX, originalY, movedRight, move
 export function dragShips(board) {
   // loop over ship objects and implement this
   const shipBoxes = [...document.querySelectorAll('#grid1 .ship')];
-  console.log(shipBoxes);
-  const gridRect = document.querySelector('#grid1').getBoundingClientRect();
+  // const gridRect = document.querySelector('#grid1').getBoundingClientRect();
 
   for (let i = 0; i < shipBoxes.length; i += 1) {
     // update this to be the position of the ship
     const position = { x: 0, y: 0 };
-    const parentGrid = document.querySelector('#grid1');
+    // const parentGrid = document.querySelector('#grid1');
     interact(shipBoxes[i])
       .draggable({
         modifiers: [
@@ -204,11 +232,9 @@ export function dragShips(board) {
         const movedRight = Math.round(position.x / 41);
         const movedDown = Math.round(position.y / 41);
         if (validPosition(board, shipObject, originalPosX, originalPosY, movedRight, movedDown)) {
-          console.log('yes');
           shipBoxes[i].style.backgroundColor = 'lightgreen';
           shipBoxes[i].style.borderColor = 'green';
         } else {
-          console.log('no');
           shipBoxes[i].style.backgroundColor = '#FFCCCB';
           shipBoxes[i].style.borderColor = 'red';
         }
@@ -222,13 +248,6 @@ export function dragShips(board) {
         const originalPosY = Math.floor(squareIndex / 10);
         const movedRight = Math.round(position.x / 41);
         const movedDown = Math.round(position.y / 41);
-        console.log(`originalPosX: ${originalPosX}`);
-        console.log(`originalPosY: ${originalPosY}`);
-        console.log(`movedRight: ${movedRight}`);
-        console.log(`movedDown: ${movedDown}`);
-        console.log(`squareIndex: ${squareIndex}`);
-        // console.log(`newSquareIndex: ${newSquareIndex}`);
-        console.log('\n');
 
         // if valid
         // if not valid -- needs to fit on grid and needs to not overlap other ships
@@ -236,7 +255,6 @@ export function dragShips(board) {
 
         if (validPosition(board, shipObject, originalPosX, originalPosY, movedRight, movedDown)) {
           const newSquareIndex = squareIndex + movedRight + movedDown * 10;
-          // console.log(newSquareIndex);
           containerSquare.removeChild(shipBoxes[i]);
 
           // add the box to the new square
