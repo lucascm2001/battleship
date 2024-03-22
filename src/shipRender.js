@@ -62,11 +62,13 @@ export function toggleAxis(gameboard, shipObject, shipBox) {
   }
 }
 
-export function updateShipPositions(gameboard) {
+export function updateShipPositions(player) {
   // grab the information from the gameboard after clicking randomize ship placement
   // gameboard should have valid ship positions to use
 
-  const shipBoxes = [...document.querySelectorAll('#grid1 .ship')];
+  const rightClass = player.number === 1 ? '.ship' : '.no-see-ship';
+  const { gameboard } = player;
+  const shipBoxes = [...document.querySelectorAll(`#grid${player.number} ${rightClass}`)];
 
   for (let i = 0; i < gameboard.ships.length; i += 1) {
     // loop over ships
@@ -77,7 +79,7 @@ export function updateShipPositions(gameboard) {
     containerSquare.removeChild(shipBox);
 
     const newSquareIndex = gameboard.ships[i].location[0];
-    const newSquare = document.querySelector(`#grid1 .square:nth-child(${newSquareIndex + 1})`);
+    const newSquare = document.querySelector(`#grid${player.number} .square:nth-child(${newSquareIndex + 1})`);
     newSquare.appendChild(shipBox);
   }
 }

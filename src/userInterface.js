@@ -39,8 +39,9 @@ export function updateBoard(enemyPlayer, index) {
     enemyPlayer.gameboard.receiveAttack(index);
   } else {
     const hitBox = document.createElement('div');
-    hitBox.classList.add('hit');
+    hitBox.classList.add('hitBox');
     hitBox.style.pointerEvents = 'none';
+    square.classList.add('hit');
     square.appendChild(hitBox);
 
     enemyPlayer.gameboard.receiveAttack(index);
@@ -56,22 +57,16 @@ export function updateBoard(enemyPlayer, index) {
 export function fadeBoard(player) {
   const gridToFade = document.querySelector(`#grid${player.number}`);
   gridToFade.classList.toggle('fade');
-  /*
-  [...gridToFade.children].forEach((square) => {
-    square.classList.toggle('hover');
-  });
-  */
+
+  const playerToFade = document.querySelector(`.players:nth-child(${player.number})`);
+  playerToFade.classList.toggle('fade');
 }
 
 // update text based on
-export function updateText(player, text = null) {
+export function updateText(player) {
   // update text to say 'Player 1's turn'
   const gameText = document.querySelector('#sentence');
-  if (text !== null) {
-    gameText.textContent = text;
-  } else {
-    gameText.textContent = `Player ${player.number}'s turn to shoot`;
-  }
+  gameText.textContent = `Player ${player.number}'s turn to shoot`;
 }
 
 export function winningText(player) {
@@ -91,7 +86,7 @@ export function activateGrid(player) {
   const grid = document.querySelector(`#grid${player.number}`);
   for (let i = 0; i < [...grid.children].length; i += 1) {
     // allow the event listeners only for non hits
-    if (![...[...grid.children][i].classList].includes('miss')) {
+    if (![...[...grid.children][i].classList].includes('miss') && ![...[...grid.children][i].classList].includes('hit')) {
       [...grid.children][i].style.pointerEvents = 'auto';
     }
     // check if the square is not hit

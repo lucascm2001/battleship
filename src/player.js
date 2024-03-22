@@ -2,9 +2,8 @@
 import Gameboard from './gameboard.js';
 
 export default class Player {
-  constructor(number, bot) {
+  constructor(number) {
     this.gameboard = new Gameboard();
     this.number = number;
-    this.bot = bot;
   }
 }

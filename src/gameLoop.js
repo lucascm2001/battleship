@@ -22,17 +22,25 @@ import {
 import selectIndex from './algorithm.js';
 
 /* TODO: Have screen stop on end game, play again button
-create AI for the bot it fights
 */
 
-const player1 = new Player(1, false);
-const player2 = new Player(2, false);
+const restartbutton = document.querySelector('#restart');
 
-player1.gameboard.placeNewShip(2, 8, 9, 'x', 1);
-player1.gameboard.placeNewShip(5, 1, 3, 'y', 2);
-player1.gameboard.placeNewShip(3, 1, 1, 'x', 3);
+const player1 = new Player(1);
+const player2 = new Player(2);
 
-player2.gameboard.placeNewShip(2, 7, 7, 'x', 1);
+// create the ships for the two boards
+player1.gameboard.placeNewShip(5, 1, 3, 'y', 1);
+player1.gameboard.placeNewShip(4, 4, 6, 'y', 2);
+player1.gameboard.placeNewShip(3, 7, 8, 'x', 3);
+player1.gameboard.placeNewShip(3, 7, 2, 'x', 4);
+player1.gameboard.placeNewShip(2, 4, 4, 'x', 5);
+
+player2.gameboard.placeNewShip(5, 1, 3, 'y', 1);
+player2.gameboard.placeNewShip(4, 4, 6, 'y', 2);
+player2.gameboard.placeNewShip(3, 1, 1, 'x', 3);
+player2.gameboard.placeNewShip(3, 7, 2, 'y', 4);
+player2.gameboard.placeNewShip(2, 4, 4, 'x', 5);
 
 createGrids();
 showShips(player1.gameboard, player2.gameboard);
@@ -46,8 +54,11 @@ fadeBoard(player2);
 const randomizeShipButton = document.querySelector('#randomize');
 randomizeShipButton.addEventListener('click', () => {
   player1.gameboard.randomizeShipPlacement();
-  updateShipPositions(player1.gameboard);
+  updateShipPositions(player1);
 });
+
+player2.gameboard.randomizeShipPlacement();
+updateShipPositions(player2);
 
 // --- start the actualy game
 const placeShipsButton = document.querySelector('#place-ships');
@@ -57,7 +68,6 @@ function gameIsOver() {
   if (player1.gameboard.checkAllShipsSunk()) {
     return true;
   } if (player2.gameboard.checkAllShipsSunk()) {
-    console.log('player 1 wins!');
     return true;
   }
   return false;
