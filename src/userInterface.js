@@ -28,6 +28,18 @@ export function createGrids() {
   container.appendChild(grid2);
 }
 
+export function updateText(playerNumber, hit, beginningText) {
+  const gameText = document.querySelector('#sentence');
+
+  if (beginningText) {
+    gameText.textContent = 'Place your ships.';
+  } else {
+    const playerText = playerNumber === 1 ? 'Player' : 'Computer';
+    const hitText = hit ? 'hit' : 'missed';
+    gameText.textContent = `${playerText} ${hitText}`;
+  }
+}
+
 export function updateBoard(enemyPlayer, index) {
   const boardNumber = enemyPlayer.number;
   const square = document.querySelector(`#grid${boardNumber} .square:nth-child(${index + 1})`);
@@ -37,6 +49,7 @@ export function updateBoard(enemyPlayer, index) {
   if (enemyPlayer.gameboard.board[index].ship === null) {
     square.classList.add('miss');
     enemyPlayer.gameboard.receiveAttack(index);
+    updateText((enemyPlayer.number + 1) % 2, false, false);
   } else {
     const hitBox = document.createElement('div');
     hitBox.classList.add('hitBox');
@@ -45,6 +58,8 @@ export function updateBoard(enemyPlayer, index) {
     square.appendChild(hitBox);
 
     enemyPlayer.gameboard.receiveAttack(index);
+    updateText((enemyPlayer.number % 2) + 1, true, false);
+
     if (enemyPlayer.gameboard.board[index].ship.isSunk()) {
       shipSunk(enemyPlayer, enemyPlayer.gameboard.board[index].ship);
     }
@@ -62,16 +77,13 @@ export function fadeBoard(player) {
   playerToFade.classList.toggle('fade');
 }
 
-// update text based on
-export function updateText(player) {
-  // update text to say 'Player 1's turn'
-  const gameText = document.querySelector('#sentence');
-  gameText.textContent = `Player ${player.number}'s turn to shoot`;
-}
-
 export function winningText(player) {
   const gameText = document.querySelector('#sentence');
-  gameText.textContent = `Player ${player.number} wins!`;
+  if (player.number === 1) {
+    gameText.textContent = 'Player wins!';
+  } else {
+    gameText.textContent = 'Computer wins!';
+  }
 }
 
 export function deactivateGrid(player) {

@@ -24,6 +24,9 @@ import selectIndex from './algorithm.js';
 
 import restartGame from './restart.js';
 
+// fix the text at the top, make it look nicer.
+// fix the game to fit on a mobile screen
+
 function gameIsOver(player1, player2) {
   if (player1.gameboard.checkAllShipsSunk() || player2.gameboard.checkAllShipsSunk()) {
     return true;
@@ -39,10 +42,8 @@ function nextPlayer(player, enemyPlayer) {
     restartGame(enemyPlayer);
     // play again button !!
   } else if (player.number === 1) { // human player turn
-    updateText(player);
     activateGrid(enemyPlayer);
   } else { // computer turn
-    updateText(player);
     deactivateGrid(player);
     updateBoard(enemyPlayer, selectIndex(enemyPlayer.gameboard));
     nextPlayer(enemyPlayer, player);
@@ -60,10 +61,12 @@ function updateEventListeners(player, enemyPlayer) {
 }
 
 function startGame(player1, player2) {
+  // fix this to show what the player and the computer do
+  updateText(player1, false, true);
+
   removeButtons();
   deactivateShips();
   updateEventListeners(player1, player2);
-  updateText(player1);
   fadeBoard(player2);
   activateGrid(player2);
 }
