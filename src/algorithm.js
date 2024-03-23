@@ -11,11 +11,21 @@ function addToStack(gameboard, target) {
   stack = [...new Set(stack)];
 }
 
+function noStrayHits(gameboard) {
+  for (let i = 0; i < gameboard.board.length; i += 1) {
+    if (gameboard.board[i].isHit && gameboard.board[i].ship !== null) {
+      if (!gameboard.board[i].ship.isSunk()) return false;
+    }
+  }
+  return true;
+}
+
 export default function selectIndex(gameboard) {
-  // hunt mode if there are no hits that haven't resulted in a sunked ship
-  // target mode if there are hits but those haven't resulted in a sink
-  // just add things to a stack hehe
+  if (noStrayHits(gameboard)) {
+    stack = [];
+  }
   if (stack.length !== 0) {
+    // clear stack if all hits are part of sunken ships
     addToStack(gameboard, stack[stack.length - 1]);
     return stack.pop();
   }
@@ -33,4 +43,3 @@ export default function selectIndex(gameboard) {
 
 // change the checkerboard pattern to adapt to hits and misses
 // change checkerboard to every 3 when the 2 is gone
-// when ship sinks, go back to hunting

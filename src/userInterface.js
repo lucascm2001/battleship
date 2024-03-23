@@ -97,8 +97,8 @@ export function activateGrid(player) {
 }
 
 export function removeButtons() {
-  const randomizeButton = document.querySelector('#randomize');
   const startGameButton = document.querySelector('#place-ships');
-  randomizeButton.remove();
+  const instructionContainer = document.querySelector('.button-container');
+  instructionContainer.remove();
   startGameButton.remove();
 }
