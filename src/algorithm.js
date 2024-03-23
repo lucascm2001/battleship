@@ -30,3 +30,7 @@ export default function selectIndex(gameboard) {
   addToStack(gameboard, possibleEvenIndices[randomIndex]);
   return possibleEvenIndices[randomIndex];
 }
+
+// change the checkerboard pattern to adapt to hits and misses
+// change checkerboard to every 3 when the 2 is gone
+// when ship sinks, go back to hunting

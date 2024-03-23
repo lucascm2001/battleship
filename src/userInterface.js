@@ -95,3 +95,10 @@ export function activateGrid(player) {
     }
   }
 }
+
+export function removeButtons() {
+  const randomizeButton = document.querySelector('#randomize');
+  const startGameButton = document.querySelector('#place-ships');
+  randomizeButton.remove();
+  startGameButton.remove();
+}

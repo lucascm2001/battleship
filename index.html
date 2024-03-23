@@ -14,15 +14,20 @@
   <div class="title">Battleship</div>
   <div class="messages">
     <span id="sentence"></span>
-    <span class="input-cursor"></span></div>
-
+    <span class="input-cursor"></span>
   </div>
   <div class="board-container">
     <div class="players">Player</div>
     <div class="players">Computer</div>
   </div>
-  <button id="randomize">Randomize ship placement</button>
-  <button id="place-ships">Done placing ships</button>
-  <button id="restart">Restart Game</button>
+  <div class="button-container">
+    <button id="randomize">Randomize ship placement</button>
+  </div>
+  <button id="place-ships">Play</button>
+
+  <dialog id="dialog">
+    <div class="winning-text"><span id="winning-player"></span> wins!</div>
+    <button class="close">Play again</button>
+  </dialog>
 </body>
 </html>
