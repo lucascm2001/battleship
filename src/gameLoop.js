@@ -12,6 +12,8 @@ import {
   activateGrid,
   deactivateGrid,
   removeButtons,
+  changeDifficulty,
+  setDifficulty,
 } from './userInterface.js';
 
 import {
@@ -20,12 +22,11 @@ import {
   deactivateShips,
 } from './shipRender.js';
 
-import selectIndex from './algorithm.js';
+import { selectIndexEasy, selectIndexHard } from './algorithm.js';
 
 import restartGame from './restart.js';
 
-// fix the text at the top, make it look nicer.
-// fix the game to fit on a mobile screen
+let difficulty;
 
 function gameIsOver(player1, player2) {
   if (player1.gameboard.checkAllShipsSunk() || player2.gameboard.checkAllShipsSunk()) {
@@ -45,7 +46,12 @@ function nextPlayer(player, enemyPlayer) {
     activateGrid(enemyPlayer);
   } else { // computer turn
     deactivateGrid(player);
-    updateBoard(enemyPlayer, selectIndex(enemyPlayer.gameboard));
+    if (difficulty === 'easy') {
+      updateBoard(enemyPlayer, selectIndexEasy(enemyPlayer.gameboard));
+    } else if (difficulty === 'hard') {
+      updateBoard(enemyPlayer, selectIndexHard(enemyPlayer.gameboard));
+    }
+
     nextPlayer(enemyPlayer, player);
   }
 }
@@ -62,8 +68,8 @@ function updateEventListeners(player, enemyPlayer) {
 
 function startGame(player1, player2) {
   // fix this to show what the player and the computer do
+  difficulty = setDifficulty();
   updateText(player1, false, true);
-
   removeButtons();
   deactivateShips();
   updateEventListeners(player1, player2);
@@ -106,9 +112,11 @@ function setGame() {
   player2.gameboard.randomizeShipPlacement();
   updateShipPositions(player2);
 
+  changeDifficulty();
+
   // --- start the actualy game
-  const placeShipsButton = document.querySelector('#place-ships');
-  placeShipsButton.addEventListener('click', () => startGame(player1, player2));
+  const playButton = document.querySelector('#play');
+  playButton.addEventListener('click', () => startGame(player1, player2));
 }
 
 setGame();

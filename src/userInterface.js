@@ -109,8 +109,38 @@ export function activateGrid(player) {
 }
 
 export function removeButtons() {
-  const startGameButton = document.querySelector('#place-ships');
-  const instructionContainer = document.querySelector('.button-container');
+  const startGameButton = document.querySelector('#play');
+  const instructionContainer = document.querySelector('.instructions-container');
+
   instructionContainer.remove();
   startGameButton.remove();
+}
+
+export function changeDifficulty() {
+  const easyButton = document.querySelector('#easy');
+  const hardButton = document.querySelector('#hard');
+
+  easyButton.addEventListener('click', () => {
+    easyButton.classList.add('difficulty-clicked');
+    hardButton.classList.remove('difficulty-clicked');
+
+    easyButton.classList.remove('difficulty-not-clicked');
+    hardButton.classList.add('difficulty-not-clicked');
+  });
+  hardButton.addEventListener('click', () => {
+    hardButton.classList.add('difficulty-clicked');
+    easyButton.classList.remove('difficulty-clicked');
+
+    hardButton.classList.remove('difficulty-not-clicked');
+    easyButton.classList.add('difficulty-not-clicked');
+  });
+}
+
+export function setDifficulty() {
+  const easyButton = document.querySelector('#easy');
+
+  if ([...easyButton.classList].includes('difficulty-clicked')) {
+    return 'easy';
+  }
+  return 'hard';
 }

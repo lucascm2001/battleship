@@ -156,17 +156,70 @@ body {
   background-color: lightgreen;
 }
 
+.instructions-container {
+  margin-top: -20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+  width: 900px;
+}
+
 .button-container {
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: -20px;
+  margin-top: 0px;
   /* line this up with the board */
-  height: 100px;
   width: 411px;
-  left: -224px;
+}
+
+.difficulty-container {
+  width: 411px;
+
+  display: flex;
+  justify-content:space-around;
+  align-items: first baseline;
+}
+
+#easy, #hard {
+  align-items: center;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: transparent 0 0 0 3px,rgba(18, 18, 18, .1) 0 6px 20px;
+  color: #121212;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 1 1 auto;
+  font-size: 1rem;
+  font-weight: 700;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  outline: none;
+  padding: 1rem 1.2rem;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow .2s,-webkit-box-shadow .2s;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  height: 50%;
+  max-width: 150px;
+  touch-action: manipulation;
+}
+
+#easy:hover, #hard:hover {
+  box-shadow: #121212 0 0 0 3px, transparent 0 0 0 0;
+}
+
+.difficulty-clicked {
+  border: 3px solid black;
+  /*border: #121212 0 0 0 3px, transparent 0 0 0 0; */
+}
+.difficulty-not-clicked {
+  border: 0;
 }
 
 #instructions {
@@ -208,7 +261,7 @@ body {
   box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset, rgba(50, 50, 93, .2) 0 6px 15px 0, rgba(0, 0, 0, .1) 0 2px 2px 0, rgba(50, 151, 211, .3) 0 0 0 4px;
 }
 
-#place-ships {
+#play {
   position: absolute;
   top: 43%;
   left: calc(50% + 100px);
@@ -232,7 +285,7 @@ body {
   touch-action: manipulation;
 }
 
-#place-ships:hover {
+#play:hover {
   box-shadow: rgba(0, 0, 0, .15) 0 3px 9px 0;
   transform: translateY(-2px);
 }

@@ -21,11 +21,17 @@
     <div class="players">Player</div>
     <div class="players">Computer</div>
   </div>
-  <div class="button-container">
-    <div id="instructions">Click to rotate ships. Drag and drop to move ships.</div>
-    <button id="randomize">Randomize ship placement</button>
+  <div class="instructions-container">
+    <div class="button-container">
+      <div id="instructions">Click to rotate ships. Drag and drop to move ships.</div>
+      <button id="randomize">Randomize ship placement</button>
+    </div>
+    <div class="difficulty-container">
+      <button id="easy" class="difficulty-clicked">Easy Mode</button>
+      <button id="hard" class="difficulty-not-clicked">Hard Mode</button>
+    </div>
   </div>
-  <button id="place-ships">Play</button>
+  <button id="play">Play</button>
 
   <dialog id="dialog">
     <div class="winning-text"><span id="winning-player"></span> wins!</div>

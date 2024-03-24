@@ -1,3 +1,6 @@
+/* eslint-disable no-restricted-syntax */
+
+// ---------------- these functions are for easy mode --------
 let stack = [];
 
 function addToStack(gameboard, target) {
@@ -24,43 +27,8 @@ function noStrayHits(gameboard) {
   }
   return true;
 }
-/*
-function checkAround(index) {
-  const adjacentIndices = [];
-  if (index - 10 >= 0) adjacentIndices.push(index - 10);
-  if (index + 10 <= 99) adjacentIndices.push(index + 10);
-  if ((index % 10) - 1 >= 0) adjacentIndices.push(index - 1);
-  if ((index % 10) + 1 <= 9) adjacentIndices.push(index + 1);
-  return adjacentIndices;
-}
 
-function followPossibleShip(gameboard) {
-  // if there are two in one direction, follow that direction
-  for (let i = 0; i < gameboard.board.length; i += 1) {
-    // check for a hit that isn't part of a sunken ship
-    if (gameboard.board[i].isHit
-      && gameboard.board[i].ship !== null
-      && !gameboard.board[i].ship.isSunk()) {
-      // check around this cell for another
-      const adjacentIndices = checkAround(i);
-      adjacentIndices.forEach((val) => {
-        if (gameboard.board[val].isHit
-          && gameboard.board[val].ship !== null
-          && !gameboard.board[i].ship.isSunk()) {
-          return val;
-        }
-        return -1;
-      });
-    }
-  }
-  return -1;
-} */
-/*
-function noConfinedSquares(gameboard) {
-
-}
-*/
-export default function selectIndex(gameboard) {
+export function selectIndexEasy(gameboard) {
   if (noStrayHits(gameboard)) {
     stack = [];
   }
@@ -81,5 +49,108 @@ export default function selectIndex(gameboard) {
   return possibleEvenIndices[randomIndex];
 }
 
-// change the checkerboard pattern to adapt to hits and misses
-// change checkerboard to every 3 when the 2 is gone
+// ------------ these functions are for hard mode ---------------
+function range(a, b) {
+  return [...Array(b - a + 1).keys()].map((x) => x + a);
+}
+
+function range10(a, b) {
+  return [...Array(Math.floor(b / 10) - Math.floor(a / 10) + 1).keys()].map((x) => 10 * x + a);
+}
+
+function generateProbabilityMap(gameboard) {
+  const probMap = Array(100).fill(0);
+  for (let j = 0; j < gameboard.ships.length; j += 1) {
+    const ship = gameboard.ships[j];
+    for (let i = 0; i < gameboard.board.length; i += 1) {
+      // if it is an empty cell, get potential ship endpoints
+      if (!gameboard.board[i].isHit) {
+        const endpoints = [];
+        if ((i % 10) + ship.len - 1 <= 9) {
+          endpoints.push([i, i + ship.len - 1, 'x']);
+        }
+        if (i + 10 * (ship.len - 1) <= 99) {
+          endpoints.push([i, i + 10 * (ship.len - 1), 'y']);
+        }
+        for (const possEndpoints of endpoints) {
+          // loop here to add to probability map for possible ship placements
+          if (possEndpoints[2] === 'x') {
+            const rangePoints = range(possEndpoints[0], possEndpoints[1]);
+            if (rangePoints.every((index) => !gameboard.board[index].isHit)) {
+              for (let k = possEndpoints[0]; k <= possEndpoints[1]; k += 1) {
+                probMap[k] += 1;
+              }
+            }
+          } else if (possEndpoints[2] === 'y') {
+            const rangePoints = range10(possEndpoints[0], possEndpoints[1]);
+            if (rangePoints.every((index) => !gameboard.board[index].isHit)) {
+              for (let k = possEndpoints[0]; k <= possEndpoints[1]; k += 10) {
+                probMap[k] += 1;
+              }
+            }
+          }
+        }
+      }
+
+      // increase probability of attacking squares near successful hits
+      if (gameboard.board[i].isHit
+        && gameboard.board[i].ship !== null
+        && !gameboard.board[i].ship.isSunk()) { // has hit ship, not sunk
+        // check to the right
+        if ((i % 10) + 1 <= 9 && !gameboard.board[i + 1].isHit) {
+          if ((i % 10) - 1 >= 0
+            && gameboard.board[i + 1].ship !== null
+            && !gameboard.board[i + 1].ship.isSunk()) {
+            probMap[i + 1] += 15;
+          } else {
+            probMap[i + 1] += 10;
+          }
+        }
+        // check to the left
+        if ((i % 10) - 1 >= 0 && !gameboard.board[i - 1].isHit) {
+          if ((i % 10) + 1 <= 9
+            && gameboard.board[i - 1].ship !== null
+            && !gameboard.board[i - 1].ship.isSunk()) {
+            probMap[i - 1] += 15;
+          } else {
+            probMap[i - 1] += 10;
+          }
+        }
+        // check below
+        if (i + 10 <= 99 && !gameboard.board[i + 10].isHit) {
+          if (i - 10 >= 0
+            && gameboard.board[i - 10].ship !== null
+            && !gameboard.board[i - 10].ship.isSunk()) {
+            probMap[i + 10] += 15;
+          } else {
+            probMap[i + 10] += 10;
+          }
+        }
+        // check above
+        if (i - 10 >= 0 && !gameboard.board[i - 10].isHit) {
+          if (i + 10 <= 99
+            && gameboard.board[i + 10].ship !== null
+            && !gameboard.board[i + 10].ship.isSunk()) {
+            probMap[i - 10] += 15;
+          } else {
+            probMap[i - 10] += 10;
+          }
+        }
+      } else if (gameboard.board[i].isHit && gameboard.board[i].ship === null) {
+        // set any misses to 0 probability
+        probMap[i] = 0;
+      }
+    }
+  }
+  return probMap;
+}
+
+export function selectIndexHard(gameboard) {
+  const probMap = generateProbabilityMap(gameboard);
+  // find index with maximum value
+  // eslint-disable-next-line arrow-body-style
+  const indexMaxValue = probMap.reduce((bestIndex, curr, currIndex, arr) => {
+    return curr > arr[bestIndex] ? currIndex : bestIndex;
+  }, 0);
+  return indexMaxValue;
+}
