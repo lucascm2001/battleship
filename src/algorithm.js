@@ -60,8 +60,9 @@ function range10(a, b) {
 
 function generateProbabilityMap(gameboard) {
   const probMap = Array(100).fill(0);
-  for (let j = 0; j < gameboard.ships.length; j += 1) {
-    const ship = gameboard.ships[j];
+  const nonSunkShips = gameboard.ships.filter((ship) => !ship.isSunk());
+  for (let j = 0; j < nonSunkShips.length; j += 1) {
+    const ship = nonSunkShips[j];
     for (let i = 0; i < gameboard.board.length; i += 1) {
       // if it is an empty cell, get potential ship endpoints
       if (!gameboard.board[i].isHit) {
