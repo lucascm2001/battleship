@@ -367,3 +367,19 @@ dialog[open] {
   transform: translateY(0);
 }
 
+footer {
+  translate: 0 5rem;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+img {
+  width: 2rem;
+  height: 2rem;
+}
+
